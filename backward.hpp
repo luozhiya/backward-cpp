@@ -3967,7 +3967,34 @@ private:
   bool _enabled;
 };
 
-#else // ndef BACKWARD_SYSTEM_LINUX
+#elif defined(BACKWARD_SYSTEM_WINDOWS)
+
+namespace Color {
+enum type { yellow, purple, reset };
+} // namespace Color
+
+class Colorize {
+public:
+  Colorize(std::ostream &os) : _os(os), _reset(false), _enabled(false) {}
+  void activate(ColorMode::type mode) { _enabled = mode == ColorMode::always; }
+  void activate(ColorMode::type mode, FILE *) {
+    activate(mode);
+  }
+  void set_color(Color::type ccode);
+
+  ~Colorize() {
+    if (_reset) {
+      set_color(Color::reset);
+    }
+  }
+
+private:
+  std::ostream &_os;
+  bool _reset;
+  bool _enabled;
+};
+
+#else
 
 namespace Color {
 enum type { yellow = 0, purple = 0, reset = 0 };

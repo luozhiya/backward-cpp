@@ -35,8 +35,28 @@
 
 #include "backward.hpp"
 
+#if defined(BACKWARD_SYSTEM_WINDOWS)
+#include "color-console/color.hpp"
+#endif // ndef BACKWARD_SYSTEM_WINDOWS
+
 namespace backward {
 
 backward::SignalHandling sh;
+
+#if defined(BACKWARD_SYSTEM_WINDOWS)
+
+void Colorize::set_color(Color::type ccode) {
+  if (!_enabled)
+    return;
+  if (ccode == Color::yellow)
+    _os << hue::yellow;
+  else if (ccode == Color::purple)
+    _os << hue::purple;
+  else
+    _os << hue::reset;
+  _reset = ccode != Color::reset;
+}
+
+#endif // ndef BACKWARD_SYSTEM_WINDOWS
 
 } // namespace backward
